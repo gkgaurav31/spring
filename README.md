@@ -1,5 +1,3 @@
-Here's a beautified version with emojis:
-
 # 🌱 Spring Framework - 101 🌱
 
 This repository is a treasure trove for novices embarking on their Spring Framework journey! 😊
