@@ -116,3 +116,17 @@ public class App {
 > When two methods annotated with `@Bean` call each other, Spring knows we want to create a link between the beans. If the bean already exists in the context, Spring returns the existing bean without forwarding the call to the `@Bean` method. If the bean doesn’t exist, Spring creates the bean and returns its reference.
 
 > **TIP**: We can prove the above behavior by adding a no-args constructor with a print statement in the `Parrot` class. It will be called only once when we run our app.
+
+- Alternative way to achieve this wiring, but without directly calling the `parrot()` method. All we need to do is update the method which creates the `Person` bean.
+
+The interesting thing here is that now Spring will automatically **_inject_** the bean for parrot while creating the person bean. (Dependency Injection)
+
+```java
+@Bean
+public Person person(Parrot parrot){ //will be injected by spring!
+    Person person = new Person();
+    person.setName("Alan");
+    person.setParrot(parrot); //no direct call to parrot() here
+    return person;
+}
+```
