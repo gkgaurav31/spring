@@ -5,6 +5,9 @@ This quickstart is to show how we can add a bean to the Spring Context.
 ## STEPS
 
 - Create a simple maven project with a Main method to get started.
+
+![New Maven Project](new-maven-project.png)
+
 - Add the maven dependency for spring context
 
 ```xml
