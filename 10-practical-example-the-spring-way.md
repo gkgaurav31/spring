@@ -212,6 +212,96 @@ public class App {
 }
 ```
 
+- In the `CommentService` class, instead of using constructor to injected the dependencies, we can make use of `@Autowired` annotation. The code would look like this:
+
+```java
+package service;
+
+import model.Comment;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import proxy.CommentNotificationProxy;
+import repository.CommentRepository;
+
+@Component
+public class CommentService {
+
+    @Autowired
+    private CommentRepository commentRepository; //removed final
+
+    @Autowired
+    private CommentNotificationProxy commentNotificationProxy; //removed final
+
+    public void publishComment(Comment comment){
+        commentRepository.storeComment(comment);
+        commentNotificationProxy.sendComment(comment);
+    }
+
+}
+```
+
+Spring uses the default constructor to create the instance of the
+`CommentService` class and then injects the two dependencies from its context.
+
+- Instead of using `@Component` annotation, we can also make use of `@Bean` in configuration class. So, we can remove `@Component` and `@ComponentScan` from the corresponding classes. And we can create the beans as we have done before using `@Bean` still using abstraction through interfaces.
+
+```java
+package config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import proxy.CommentNotificationProxy;
+import proxy.EmailCommentNotificationProxy;
+import repository.CommentRepository;
+import repository.DBCommentRepository;
+import service.CommentService;
+
+@Configuration
+public class AppConfig {
+    @Bean
+    public CommentRepository commentRepository(){
+        return new DBCommentRepository();
+    }
+
+    @Bean
+    public CommentNotificationProxy commentNotificationProxy(){
+        return new EmailCommentNotificationProxy();
+    }
+
+    @Bean
+    public CommentService commentService(CommentRepository commentRepository, CommentNotificationProxy commentNotificationProxy){
+        return new CommentService(commentRepository, commentNotificationProxy);
+    }
+}
+```
+
+```java
+package service;
+
+import model.Comment;
+import org.springframework.stereotype.Component;
+import proxy.CommentNotificationProxy;
+import repository.CommentRepository;
+
+@Component
+public class CommentService {
+
+    private CommentRepository commentRepository;
+    private CommentNotificationProxy commentNotificationProxy;
+
+    public CommentService(CommentRepository commentRepository, CommentNotificationProxy commentNotificationProxy) {
+        this.commentRepository = commentRepository;
+        this.commentNotificationProxy = commentNotificationProxy;
+    }
+
+    public void publishComment(Comment comment){
+        commentRepository.storeComment(comment);
+        commentNotificationProxy.sendComment(comment);
+    }
+
+}
+```
+
 ### Benefits of Using Spring and Dependency Injection
 
 1. **Decoupling of Components:**
