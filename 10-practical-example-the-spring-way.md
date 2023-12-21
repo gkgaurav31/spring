@@ -109,6 +109,8 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final CommentNotificationProxy commentNotificationProxy;
 
+    //We would have to use @Autowired if the class had more than one constructor
+    //Spring uses this constructor to create the bean and injects references from its context in the parameters when creating the instance.
     public CommentService(CommentRepository commentRepository, CommentNotificationProxy commentNotificationProxy){
         this.commentRepository = commentRepository;
         this.commentNotificationProxy = commentNotificationProxy;
@@ -158,9 +160,9 @@ Notifying by e-mail. Author: Alan Wake commented: Have you played it yet?
 
 ## SPRINGIFY IT
 
-- The first step is to identify the beans that we would need the spring to maintain for us. In our case, we don't really need to have a bean for `Comment` to be maintained by Spring. Rest all the concrete classes would be needed. We don't need to mark the interfaces with `@Component` since they cannot have objects directly.
+- The first step is to identify the beans that we would need the spring to maintain for us. In our case, we don't really need to have a bean for `Comment` to be maintained by Spring since it does not depend on any other class or vice versa. Rest all the concrete classes would be needed. We don't need to mark the interfaces with `@Component` since they cannot have objects directly.
 
-- So, we add `@Component` annotation to the following classes:
+- So, we would need to add `@Component` annotation to the following classes:
 
   - `CommentService`
   - `DBCommentRepository`
@@ -209,3 +211,17 @@ public class App {
 
 }
 ```
+
+### Benefits of Using Spring and Dependency Injection
+
+1. **Decoupling of Components:**
+
+   - Spring's dependency injection decouples the `CommentService` from concrete implementations (`DBCommentRepository` and `EmailCommentNotificationProxy`). The service relies on abstractions (interfaces) rather than specific implementations, enhancing flexibility and allowing easier changes or substitutions in the future.
+
+2. **Easier Management of Dependencies:**
+
+   - Spring manages the creation and lifecycle of beans (`CommentService`, `DBCommentRepository`, `EmailCommentNotificationProxy`). It handles object instantiation, thus relieving the developer from manually managing dependencies.
+
+3. **Simplified Configuration:**
+
+   - With `@ComponentScan` and `@Configuration`, Spring auto-discovers components and wires them together based on annotations. It reduces the need for explicit object creation, enabling a more concise and maintainable codebase.
