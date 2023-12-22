@@ -80,7 +80,7 @@ public class App {
 
 The output will be true if we remove `@Scope(BeanDefinition.SCOPE_PROTOTYPE)`.
 
-## EXAMPLE USING @BEAN WAY
+## THE @BEAN WAY
 
 - Repository:
 
@@ -243,7 +243,7 @@ What if the `CommentProcessor` class had to save the comment in a DB (which mean
 
 ## Should it be a singleton?
 
-No. If we define this bean as singleton and multiple threads use it concurrently, we get into a race condition. We would not be sure which comment provided by which thread is processed and if the comment was processed correctly. In this scenario, we want each method call to get a different instance of the CommentProcessor object (and set it as a prototype bean).
+No. If we define this bean as singleton and multiple threads use it concurrently, we get into a race condition. We would not be sure which comment provided by which thread is processed and if the comment was processed correctly. In this scenario, we want each method call to get a different instance of the `CommentProcessor` object (and set it as a prototype bean).
 
 ## DOING IT THE WRONG WAY (IMPORTANT)
 
@@ -261,7 +261,9 @@ import util.CommentProcessor;
 public class CommentService {
 
     @Autowired
-    private CommentProcessor commentProcessor; //Spring injects this bean when creating the CommentService bean. But because CommentService is singleton, Spring will also create and inject the CommentProcessor just once.
+    private CommentProcessor commentProcessor;
+    //Spring injects this bean when creating the CommentService bean.
+    //But because CommentService is singleton, Spring will also create and inject the CommentProcessor just once.
 
 
     public void sendComment(Comment comment){
@@ -364,7 +366,7 @@ public class CommentProcessor {
 }
 ```
 
-Now the interesting part. In the `CommentService`, instead of having `CommentProcessor` attribute autowired, we will instead autowire an application context. How does that help? In the actual method `sendComment()` we can use this context which will be injected by spring to a bean of `CommentProcessor`. This `getBean()` method will run each time we call `sendComment()`. Since we have marked `CommentProcessor` as prototype scoped, we will get a difference instance of `CommentProcessor` each time!
+Now the interesting part. In the `CommentService`, instead of having `CommentProcessor` attribute autowired, we will autowire an application context. How does that help? We will use this in the `sendComment()` method of the `CommentService`. This `getBean()` method will run each time we call `sendComment()`. Since we have marked `CommentProcessor` as prototype scoped, we will get a difference instance of `CommentProcessor` each time!
 
 ```java
 package service;
