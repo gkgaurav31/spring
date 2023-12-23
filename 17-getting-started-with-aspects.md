@@ -194,6 +194,8 @@ INFO: publishing comment: Scooby Dooby Doo! by Scooby
 
   ![aspect-expression](aspect-expression.png)
 
+  Check AspectJ for more info: [@AspectJ](https://docs.spring.io/spring-framework/reference/core/aop/ataspectj.html)
+
 - Let's run the app!
 
   ```java
