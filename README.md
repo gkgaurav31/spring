@@ -2,8 +2,6 @@
 
 This repository is a treasure trove for novices embarking on their Spring Framework journey! 😊
 
-Certainly! Here are the corrected links based on the file names listed on the GitHub repository page:
-
 - 🚀 [**Quickstart Guide**](01-quickstart.md): Get started with Spring Framework basics
 - 🌟 [**Adding Multiple Beans of Same Type**](02-adding-multiple-beans-of-same-type.md): Manage beans effectively in Spring
 - 📚 [**Using Stereotype Annotation to Add Beans**](03-using-stereotype-annotation-to-add-beans.md): Simplify bean creation with annotations
@@ -22,8 +20,8 @@ Certainly! Here are the corrected links based on the file names listed on the Gi
 - 🔄 [**Prototype Bean Scope**](16-prototype-bean-scope.md): Explore the prototype scope for beans in Spring
 - 🎭 [**Getting Started with Aspects**](17-getting-started-with-aspects.md): Introduction to aspect-oriented programming in Spring
 
-📖 Reference Book: Spring Start Here by Laurentiu Spilca
+📖 Reference Book: [Spring Start Here](https://www.manning.com/books/spring-start-here) by Laurentiu Spilca
 
-👨‍💻 My Code Blog: Gaurav's GitHub Page
+👨‍💻 My Code Blog: [Gaurav's GitHub Page](https://gkgaurav31.github.io/)
 
 Happy Coding! 🎉
