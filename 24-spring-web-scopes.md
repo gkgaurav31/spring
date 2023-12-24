@@ -495,5 +495,3 @@ Our updated main.html can now use the count value using `<span th:text="${loginC
 ```
 
 ![application-scope](images/application-scope.png)
-
-<a href="#top" style="position: fixed; bottom: 20px; right: 20px;">Go to Top</a>
