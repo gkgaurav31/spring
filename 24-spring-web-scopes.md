@@ -11,6 +11,12 @@ Previously we have looked at Singleton and Prototype bean scopes. There are cert
 
 We will understand these with an app which has a login functionlity. The user would enter the credentials. This will be validated only for that particular request using request scope. We will keep that user logged in for a certain duration using session scope. Using application scope, we will maintain a count of logins by all the users.
 
+## 🚀 Quick Navigation
+
+- [Request Scope](#request-scope)
+- [Session Scope](#session-scope)
+- [Application Scope](#application-scope)
+
 ## REQUEST SCOPE
 
 A request-scoped bean is an object managed by Spring, for which the framework
@@ -312,3 +318,180 @@ public class LoginController {
 ```
 
 ![session-scope](images/session-scope.gif)
+
+## APPLICATION SCOPE
+
+The application scope is close to how a singleton works. The difference is that you can't have more instances of the same type in the context and that we always use the HTTP requests as a reference point when discussing the life cycle of web scopes (including the application scope).
+
+We will add a feature to our previous app in which we show the login attempts (count) made by all the users.
+
+Let us start by creating the application scope `LoginCountService`. This will maintain the count of log in attempts and it will have a method to increment it during logins.
+
+```java
+package com.example.demo.service;
+
+import org.springframework.stereotype.Service;
+import org.springframework.web.context.annotation.ApplicationScope;
+
+@Service
+@ApplicationScope
+public class LoginCountService {
+
+    private int count;
+
+    public void increment(){
+        count++;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+}
+
+```
+
+Next, we will use this in `LoginProcessor`. We add `LoginCountService` as a dependency and also add the logic to increment the count when someone tries to `login()`.
+
+```java
+package com.example.demo.util;
+
+import com.example.demo.service.LoggedUserManagementService;
+import com.example.demo.service.LoginCountService;
+import org.springframework.stereotype.Component;
+import org.springframework.web.context.annotation.RequestScope;
+
+@RequestScope
+@Component
+public class LoginProcessor {
+
+    private String username;
+    private String password;
+
+    private final LoggedUserManagementService loggedUserManagementService;
+    private final LoginCountService loginCountService;
+
+    public LoginProcessor(LoggedUserManagementService loggedUserManagementService, LoginCountService loginCountService){
+        this.loggedUserManagementService = loggedUserManagementService;
+        this.loginCountService = loginCountService;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public boolean login(){
+
+        //increase the login attempt
+        loginCountService.increment();
+
+        String username = this.getUsername();
+        String password = this.getPassword();
+
+        if(username.equals("admin") && password.equals("pwd123")){
+
+            //set the logged username to the session bean
+            loggedUserManagementService.setUsername(username);
+
+            return true;
+        }else{
+            return false;
+        }
+
+    }
+}
+```
+
+We also need to pass this count value to the view once the user is logged in. We can do this in `MainController` using `model.addAttribute("loginCount", loginCount)`. This wil be used to render in the `main.html` template.
+
+```java
+package com.example.demo.controller;
+
+import com.example.demo.service.LoggedUserManagementService;
+import com.example.demo.service.LoginCountService;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+@Controller
+public class MainController {
+
+    private final LoggedUserManagementService loggedUserManagementService;
+    private final LoginCountService loginCountService;
+
+    public MainController(LoggedUserManagementService loggedUserManagementService, LoginCountService loginCountService){
+        this.loggedUserManagementService = loggedUserManagementService;
+        this.loginCountService = loginCountService;
+    }
+
+    @GetMapping("/main")
+    public String home(@RequestParam(required = false) String logout, Model model){
+
+        if(logout != null){
+            loggedUserManagementService.setUsername(null);
+        }
+
+        String username = loggedUserManagementService.getUsername();
+        int loginCount = loginCountService.getCount();
+
+        if(username == null){
+            return "redirect:/";
+        }
+
+        model.addAttribute("username", username);
+        model.addAttribute("loginCount", loginCount);
+
+        return "main.html";
+
+    }
+
+}
+```
+
+Our updated main.html can now use the count value using `<span th:text="${loginCount}"></span>`.
+
+```html
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Home Page</title>
+  </head>
+  <body>
+    <h1>Welcome, <span th:text="${username}"></span></h1>
+
+    <h2>Your login number is: <span th:text="${loginCount}"></span></h2>
+
+    <a href="/main?logout">Log out</a>
+  </body>
+</html>
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Home Page</title>
+  </head>
+  <body>
+    <h1>Welcome, <span th:text="${username}"></span></h1>
+
+    <h2>Your login number is: <span th:text="${loginCount}"></span></h2>
+
+    <a href="/main?logout">Log out</a>
+  </body>
+</html>
+```
+
+![application-scope](images/application-scope.png)
