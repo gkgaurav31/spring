@@ -135,3 +135,183 @@ We can notice that the constructor for `LoginProcessor` getting called each time
 ![request-scope-login](images/request-scope-login.png)
 
 ## SESSION SCOPE
+
+We will build upon our previous example to add a session scope. We will create a session scope bean for `LoggedUserManagementService` which will just store the username. After a user logs in successfully, we will set this username. If the user tries to access /main directly, we will check if the user has already logged in by checking if the value of username is set for bean `LoggedUserManagementService`. If it's set, we can return `main.html` view otherwise, we will redirect to login page.
+
+Let us start by creating the `LoggedUserManagementService` which will be session scoped.
+
+```java
+package com.example.demo.service;
+
+import org.springframework.stereotype.Service;
+import org.springframework.web.context.annotation.SessionScope;
+
+@Service
+@SessionScope
+public class LoggedUserManagementService {
+
+    private String username;
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+}
+```
+
+Now, let's use this in our `LoginProcessor`. We have added a dependency for `LoggedUserManagementService` which will be injected by spring using DI. `LoginProcessor` will still be request scope. We have also updated the `login()` method to store the username using `loggedUserManagementService.setUsername(username)`. We will use this to check if the user is already logged in.
+
+```java
+package com.example.demo.util;
+
+import com.example.demo.service.LoggedUserManagementService;
+import org.springframework.stereotype.Component;
+import org.springframework.web.context.annotation.RequestScope;
+
+@RequestScope
+@Component
+public class LoginProcessor {
+
+    private String username;
+    private String password;
+
+    private final LoggedUserManagementService loggedUserManagementService;
+
+    public LoginProcessor(LoggedUserManagementService loggedUserManagementService){
+        this.loggedUserManagementService = loggedUserManagementService;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public boolean login(){
+
+        String username = this.getUsername();
+        String password = this.getPassword();
+
+        if(username.equals("admin") && password.equals("pwd123")){
+
+            //set the logged username to the session bean
+            loggedUserManagementService.setUsername(username);
+
+            return true;
+        }else{
+            return false;
+        }
+
+    }
+}
+
+```
+
+Now let us create another controller for the App `MainController`. This will have a dependency for `LoggedUserManagementService`. If the user acccesses /main, it will check if the user is already logged in by checking if `username` is not null for `loggedUserManagementService`. If it is null, redirect to `/`. Which will be handled by the previous controller `LoginController`. We will update that next.
+
+```java
+package com.example.demo.controller;
+
+import com.example.demo.service.LoggedUserManagementService;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+@Controller
+public class MainController {
+
+    private final LoggedUserManagementService loggedUserManagementService;
+
+    public MainController(LoggedUserManagementService loggedUserManagementService){
+        this.loggedUserManagementService = loggedUserManagementService;
+    }
+
+    @GetMapping("/main")
+    public String home(@RequestParam(required = false) String logout, Model model){
+
+        //if requestParam has logout key, set the username to null
+        if(logout != null){
+            loggedUserManagementService.setUsername(null);
+        }
+
+        String username = loggedUserManagementService.getUsername();
+
+        if(username == null){
+            return "redirect:/";
+        }
+
+        model.addAttribute("username", username);
+        return "main.html";
+
+    }
+
+}
+```
+
+The HTTP GET call to `/` will show the `login.html` page. The HTML page has a form. Once the user submit the form, the corresponding HTTP POST method will be called `loginPost()`. It will check if the credentials are valid. If they are not valid, add a message "login failed" which will be rendered by `login.html`. If it is valid, the login() method of `LoginProcessor` would have also set the username for `loggedUserManagementService` and we can redirect the call to `/main` which will be handled by `MainController`.
+
+```java
+package com.example.demo.controller;
+
+import com.example.demo.util.LoginProcessor;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+@Controller
+public class LoginController {
+
+    private final LoginProcessor loginProcessor;
+
+    public LoginController(LoginProcessor loginProcessor){
+        this.loginProcessor = loginProcessor;
+    }
+
+    @GetMapping("/")
+    public String loginGet(){
+        return "login.html";
+    }
+
+    @PostMapping("/")
+    public String loginPost(@RequestParam String username, @RequestParam String password, Model model){
+
+        boolean loggedIn = false;
+
+        loginProcessor.setUsername(username);
+        loginProcessor.setPassword(password);
+
+        loggedIn = loginProcessor.login();
+
+        if(loggedIn){
+            return "redirect:/main";
+        }else{
+            model.addAttribute("message", "login failed");
+        }
+
+        return "login.html";
+
+    }
+
+}
+```
+
+<video width="640" height="360" controls>
+  <source src="images/session-scope.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
