@@ -192,7 +192,7 @@ INFO: publishing comment: Scooby Dooby Doo! by Scooby
 
   "Apply this advice around the execution of any method with any return type within any class in the services package, regardless of the method name and with any parameters."
 
-  ![aspect-expression](aspect-expression.png)
+  ![aspect-expression](images/aspect-expression.png)
 
   Check AspectJ for more info: [@AspectJ](https://docs.spring.io/spring-framework/reference/core/aop/ataspectj.html)
 
