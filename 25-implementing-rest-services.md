@@ -1,6 +1,12 @@
 # IMPLEMENTING REST SERVICES
 
-When implementing REST endpoints, the Spring MVC flow changes. The app no longer needs a view resolver because the client needs the data returned by the controller's action directly. Once the controller's action completes, the dispatcher servlet returns the HTTP response without rendering any view.
+- [Managing HTTP Response](#managing-http-response)
+- [Returning an Object in a REST Controller](#returning-an-object-in-a-rest-controller)
+- [Custom Response Status and Headers (ResponseEntity)](#custom-response-status-and-headers-responseentity)
+- [Managing Exceptions at the Endpoint Level](#managing-exceptions-at-the-endpoint-level)
+  - [Using Custom Exception](#using-custom-exception)
+  - [Using REST Controller Advice](#using-rest-controller-advice)
+- [Using REST Body to get data from the client](#using-a-request-body-to-get-data-from-the-client)
 
 ![rest-services-flow](images/rest-services-flow.png)
 
@@ -319,6 +325,8 @@ curl -X POST http://localhost:8080/payment -H "Content-Type: application/json" -
 ```
 
 This is commonly used in the real world to handle the exceptions. However, in a more complex application, you would find it more comfortable to separate the responsibility of exception management. This will also avoid duplicate code. So we use REST controller advice for this.
+
+#### USING REST CONTROLLER ADVICE
 
 We can start by updating the `processPayment()` method in the `PaymentController` to only handle the "good" case:
 
