@@ -2,7 +2,7 @@
 
 We will create a service which has a REST endpoint `/payment` for HTTP POST request. We will create another service which consumes this REST endpoint in three ways:
 
-1. [**OpenFeign:**](#using-webclient)
+1. [**OpenFeign:**](#using-openfeigh-client)
    - Offered by the Spring Cloud project.
    - Recommended for new apps to consume REST endpoints.
 2. [**RestTemplate:**](#using-rest-template)
