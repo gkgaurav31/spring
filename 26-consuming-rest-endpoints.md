@@ -2,7 +2,7 @@
 
 We will create a service which has a REST endpoint `/payment` for HTTP POST request. We will create another service which consumes this REST endpoint in three ways:
 
-1. [**OpenFeign:**](#using-openfeigh-client)
+1. [**OpenFeign:**](#using-openfeigh)
    - Offered by the Spring Cloud project.
    - Recommended for new apps to consume REST endpoints.
 2. [**RestTemplate:**](#using-rest-template)
@@ -89,13 +89,13 @@ public class PaymentController {
 {"id":"2935dd18-5c70-42bc-aa56-060a5248bbfb","amount":100.0}
 ```
 
-## USING OPENFEIGH CLIENT
+## USING OPENFEIGH
 
 The RestTemplate class is currently in maintenance mode and will be deprecated. It would be better to use OpenFeign for consuming services.
 
 ![open-feign](images/open-feign.png)
 
-### DEPENDENCIES
+### DEPENDENCIES FOR USING OPENFEIGH CLIENT
 
 ```xml
 <properties>
@@ -350,3 +350,166 @@ Log in the destination:
 ## USING WEBCLIENT
 
 Spring's documentation recommends using `WebClient`, but that's only a valid recommendation for reactive apps. For apps which are not reactive, use `OpenFeign` instead.
+
+### DEPENDENCIES FOR USING WEBCLIENT
+
+```xml
+<dependencies>
+
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-webflux</artifactId>
+    </dependency>
+
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-test</artifactId>
+        <scope>test</scope>
+    </dependency>
+
+</dependencies>
+```
+
+Let's start by defining the usual `Payment` model.
+
+```java
+package com.example.demo.model;
+
+public class Payment {
+
+    private String id;
+    private double amount;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public double getAmount() {
+        return amount;
+    }
+
+    public void setAmount(double amount) {
+        this.amount = amount;
+    }
+}
+```
+
+We will need a configuration class to get a bean for `WebClient`
+
+```java
+package com.example.demo.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.reactive.function.client.WebClient;
+
+@Configuration
+public class AppConfig {
+
+    @Bean
+    public WebClient webClient(){
+        return WebClient.builder().build();
+    }
+
+}
+```
+
+application.properties file like before:
+
+```properties
+name.service.url=http://localhost:8080
+server.port=9090
+```
+
+Now, we can create the `PaymentProxy` class which will make use of `WebClient`.
+
+```java
+package com.example.demo.proxy;
+
+import com.example.demo.model.Payment;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
+
+@Component
+public class PaymentProxy {
+
+    @Value("${name.service.url}")
+    private String url;
+
+    private final WebClient webClient;
+
+
+    public PaymentProxy(WebClient webClient){
+        this.webClient = webClient;
+    }
+
+    //Mono represents a container that can emit at most one item or signal an error.
+    //It's a reactive type that represents a single asynchronous computation resulting in either a single value or no value at all.
+    //Asynchronous and Non-Blocking
+    public Mono<Payment> createPayment(String requestId, Payment payment){
+        //the method returns the Mono<Payment>, which represents a promise to provide a Payment object in the future.
+        //This indicates that the method is non-blocking and will complete with the result
+        //or an error at a later time when the HTTP response is received and processed.
+
+        return webClient.post()
+                .uri(url+"/payment")
+                .header("requestId", requestId)
+                .body(Mono.just(payment), Payment.class) //body(publisher, elementClass)
+                .retrieve() //Proceed to declare how to extract the response.
+                .bodyToMono(Payment.class); //Decode the body to the given target type
+
+    }
+
+}
+
+```
+
+Finally, define the controller class. Notice that the return type is `Mono<Payment>`.
+
+```java
+package com.example.demo.controller;
+
+import com.example.demo.model.Payment;
+import com.example.demo.proxy.PaymentProxy;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Mono;
+
+import java.util.UUID;
+
+@RestController
+public class PaymentController {
+
+    private final PaymentProxy paymentProxy;
+
+    public PaymentController(PaymentProxy paymentProxy){
+        this.paymentProxy = paymentProxy;
+    }
+
+    @PostMapping("/payment")
+    public Mono<Payment> createPayment(@RequestBody Payment payment){
+        return paymentProxy.createPayment(UUID.randomUUID().toString(), payment);
+    }
+
+}
+```
+
+TEST:
+
+```bash
+curl -X POST -H "Content-Type: application/json" -H "requestId: 354658768" -d '{"amount" : 100}'  http://localhost:9090/payment -s
+{"id":"398c076d-b4ec-4c72-891a-568fb8496399","amount":100.0}
+```
+
+Log in the destination service:
+
+```text
+2023-12-25T20:30:52.614+05:30  INFO 16984 --- [io-8080-exec-10] c.e.demo.controller.PaymentController    : Received request with ID: 0910bc38-e481-4ef9-b004-80e2b673c0e5;Payment Amount: 100.0
+```
