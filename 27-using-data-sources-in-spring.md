@@ -269,3 +269,61 @@ curl -XPOST 'http://localhost:8080/purchase' -H 'Content-Type: application/json'
 curl -X GET http://localhost:8080/purchase -s
 [{"id":1,"product":"Spring Security in Action","price":25.2}]
 ```
+
+## USING A CUSTOM DATASOURCE BEAN
+
+In a Spring Boot application, configuring the DataSource bean is often done automatically through the application.properties file. However, there are scenarios where manual configuration of the DataSource bean becomes necessary:
+
+- Needing a particular DataSource implementation based on conditions known only during runtime requires manual creation of the DataSource bean.
+
+- When an application connects to multiple databases, each requiring its distinct DataSource, manual creation and distinction using qualifiers become necessary.
+
+- Situations may arise where specific parameters of the DataSource object need adjustment based on dynamic conditions at runtime. For instance, altering connection pool sizes depending on the environment for performance optimizations.
+
+- In cases where the application uses the Spring framework without Spring Boot, manual configuration of the DataSource bean is essential as Boot's auto-configuration features are not available.
+
+Doing this is similar to any other beans that we add to the spring context - using a configuration class and `@Bean` annotated method.
+
+```java
+package com.example.demo.controller;
+
+import com.zaxxer.hikari.HikariDataSource;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import javax.sql.DataSource;
+
+@Configuration
+public class AppConfig {
+
+    //these are not Spring specific properties, rather custom properties
+    //include them in application.properties file
+    @Value("${custom.datasource.url}")
+    private String datasourceUrl;
+    @Value("${custom.datasource.username}")
+    private String datasourceUsername;
+    @Value("${custom.datasource.password}")
+    private String datasourcePassword;
+
+    @Bean
+    public DataSource getDataSource(){
+
+        HikariDataSource dataSource = new HikariDataSource();
+        dataSource.setJdbcUrl(datasourceUrl);
+        dataSource.setUsername(datasourceUsername);
+        dataSource.setPassword(datasourcePassword);
+        dataSource.setConnectionTimeout(1000);
+
+        return dataSource;
+    }
+
+}
+```
+
+**TEST:**
+
+```bash
+curl -X GET http://localhost:8080/purchase -s
+[{"id":1,"product":"Spring Security in Action","price":25.2}]
+```
