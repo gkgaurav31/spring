@@ -4,6 +4,16 @@
 
 The JDK itself does not provide the implementation for connecting to any specific database. It offers abstraction through interfaces such as `java.sql.Connection`, `java.sql.ResultSet`, and `java.sql.Statement`. The actual implementation for connecting to a particular database is provided by JDBC drivers, which are offered by various vendors. While it is possible to directly use the JDBC driver (`JDBC DriverManager`) to establish connections to the database when necessary, this approach can introduce significant overhead. For instance, it requires authentication for each connection request made to the database. To alleviate this, `DataSource` objects come into play, facilitating the management of connections to the database. They optimize connection requests within your application, enhancing the performance of operations in the persistence layer. In SpringBoot, the default data source implementation utilizes [HikariCP](https://github.com/brettwooldridge/HikariCP) for efficient connection pooling.
 
+- [Using JDBC Template to Work with Persisted Data](#using-jdbc-template-to-work-with-persisted-data)
+  - [Dependencies Needed](#dependencies-needed)
+  - [Schema File for the Database](#schema-file-for-the-datbase)
+  - [Implementation](#implementation)
+- [Customizing the Configuration of the Data Source](#customizing-the-configuration-of-the-data-source)
+  - [Defining the Data Source in Properties File](#defining-the-data-source-in-properties-file)
+  - [Dependencies Needed for MySQL](#dependencies-needed-for-mysql)
+  - [Update the Properties File](#update-the-properties-file)
+- [Using a Custom DataSource Bean](#using-a-custom-datasource-bean)
+
 ## USING JDBC TEMPLATE TO WORK WITH PERSISTED DATA
 
 When working with a database, we implement all the capabilities related to the
