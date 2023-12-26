@@ -112,7 +112,10 @@ package com.example.demo.repository;
 
 import com.example.demo.model.Product;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 public class PurchaseRepository {
@@ -123,11 +126,30 @@ public class PurchaseRepository {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public void purchaseProduct(Product product){
+    public void storePurchase(Product product){
 
-        String sql = "INSERT INTO purchase VALUES(NULL, ?, ?)";
+        String sql = "INSERT INTO purchase (product, price) VALUES(?, ?)";
 
         jdbcTemplate.update(sql, product.getProduct(), product.getPrice());
+
+    }
+
+    public List<Product> findAllProducts(){
+
+        String sql = "SELECT * FROM purchase";
+
+        RowMapper purchaseRowMapper = (r,i) -> {    //r: ResultSet, i: int representing row number
+
+            Product rowObject = new Product();
+
+            rowObject.setId(r.getInt("id"));
+            rowObject.setProduct(r.getString("product"));
+            rowObject.setPrice(r.getBigDecimal("price"));
+
+            return rowObject;
+        };
+
+        return jdbcTemplate.query(sql, purchaseRowMapper);
 
     }
 
@@ -137,3 +159,113 @@ public class PurchaseRepository {
 The `JdbcTemplate` `update()` method sends the query to the database server. The first parameter the method gets is the query, and the next parameters are the values for the parameters. These values replace, in the same order, each question mark in the query.
 
 In Spring's `JdbcTemplate`, a SELECT query retrieves data from a database. To map this data into specific model objects (like a `Purchase` class), a `RowMapper` interface is implemented. It defines how each row from the `ResultSet` is transformed into an instance of the designated model class. The `RowMapper` serves as the mapping logic, assigning `ResultSet` values to object attributes, enabling the database data to be represented as instances of the model class for use within the Java application.
+
+Now, we can create the REST controller which is going to use the repository:
+
+```java
+package com.example.demo.controller;
+
+import com.example.demo.model.Product;
+import com.example.demo.repository.PurchaseRepository;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/purchase")
+public class PurchaseController {
+
+    private final PurchaseRepository purchaseRepository;
+
+    public PurchaseController(PurchaseRepository purchaseRepository){
+        this.purchaseRepository = purchaseRepository;
+    }
+
+    @GetMapping
+    public List<Product> findAllProducts(){
+        return purchaseRepository.findAllProducts();
+    }
+
+    @PostMapping
+    public void insertProduct(@RequestBody Product product){
+        purchaseRepository.storePurchase(product);
+    }
+
+}
+```
+
+**TEST:**
+
+```bash
+curl -X POST 'http://localhost:8080/purchase' -H 'Content-Type: application/json' -d '{
+ "product" : "Spring Security in Action",
+ "price" : 25.2
+}' -s
+
+curl -X GET http://localhost:8080/purchase -s
+[{"id":1,"product":"Spring Security in Action","price":25.2}]
+```
+
+## CUSTOMIZING THE CONFIGURATION OF THE DATA SOURCE
+
+We will configure the app to use MySQL database, by adding the MySQL JDBC Driver and configure the data source via `application.properties` file. SpringBoot will still define the DataSource bean in the spring context using the properties we define.
+
+### DEFINING THE DATA SOURCE IN PROPERTIES FILE
+
+#### DEPENDENCIES NEEDED FOR MYSQL
+
+First, let's update the dependencies to include the MySQL JDBC Driver:
+
+```xml
+<dependencies>
+
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-jdbc</artifactId>
+    </dependency>
+
+    <dependency>
+        <groupId>com.mysql</groupId>
+        <artifactId>mysql-connector-j</artifactId>
+        <scope>runtime</scope>
+    </dependency>
+
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-test</artifactId>
+        <scope>test</scope>
+    </dependency>
+
+</dependencies>
+
+```
+
+#### UPDATE THE PROPERTIES FILE
+
+We set the `initialization-mode` to always to instruct Spring Boot to run the queries in the `schema.sql` file.
+
+```properties
+spring.datasource.url=jdbc:mysql://<hostname>:3306/testdb?useLegacyDatetimeCode=false&serverTimezone=UTC
+spring.datasource.username=username
+spring.datasource.password=password
+spring.sql.init.mode=always
+```
+
+> `spring.datasource.initialization-mode=always` has been replaced by `spring.sql.init.mode` in recent SpringBoot versions.
+
+That's all. We can test our App now:
+
+```bash
+curl -XPOST 'http://localhost:8080/purchase' -H 'Content-Type: application/json' -d '{
+ "product" : "Spring Security in Action",
+ "price" : 25.2
+}' -s
+
+curl -X GET http://localhost:8080/purchase -s
+[{"id":1,"product":"Spring Security in Action","price":25.2}]
+```
