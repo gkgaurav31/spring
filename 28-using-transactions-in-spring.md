@@ -9,6 +9,13 @@ changes made by the transaction's mutable operations.
 data to the way it looked at the beginning of the transaction to avoid data
 inconsistencies.
 
+- [Understanding Transactions](#understanding-transactions)
+- [Using Transactions in Spring Apps (Implementation)](#using-transactions-in-spring-apps-implementation)
+  - [Dependencies Needed](#dependencies-needed)
+  - [Prepare the Database Tables](#prepare-the-database-tables)
+  - [Let's Code](#lets-code)
+  - [Test for Atomicity](#test-for-atomicity)
+
 ## UNDERSTANDING TRANSACTIONS
 
 To mark a method we want Spring to wrap in a transaction, we use an annotation named `@Transactional`. Behind the scenes, Spring configures an aspect (we don't implement this aspect ourselves; Spring provides it) and applies the transaction logic for the operations executed by that method.
@@ -77,6 +84,8 @@ create table account (
 INSERT INTO account (name, amount) VALUES ('Helen Down', 1000);
 INSERT INTO account (name, amount) VALUES ('Peter Read', 1000);
 ```
+
+### LET'S CODE
 
 Let's start by creating the Model class for `Account`
 
