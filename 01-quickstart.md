@@ -59,7 +59,7 @@ public class ProjectConfig {
 }
 ```
 
-Observe that the name I used for the method doesn’t contain a verb. The method’s name also becomes the bean’s name.
+Observe that the name I used for the method doesn't contain a verb. The method's name also becomes the bean's name.
 
 - Finally, we will use `AnnotationConfigApplicationContext` class to let Spring initialize its context using the Configuration class we created. Then, we can get the required bean from this context.
 

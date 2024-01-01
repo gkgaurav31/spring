@@ -113,7 +113,7 @@ public class App {
 ```
 
 > **IMPORTANT**: We might expect to have two `Parrot` beans - one created by spring while initializing the spring context and another due to `parrot()` method call while creating the `Person` bean. However, that is NOT the case.
-> When two methods annotated with `@Bean` call each other, Spring knows we want to create a link between the beans. If the bean already exists in the context, Spring returns the existing bean without forwarding the call to the `@Bean` method. If the bean doesn’t exist, Spring creates the bean and returns its reference.
+> When two methods annotated with `@Bean` call each other, Spring knows we want to create a link between the beans. If the bean already exists in the context, Spring returns the existing bean without forwarding the call to the `@Bean` method. If the bean doesn't exist, Spring creates the bean and returns its reference.
 
 > **TIP**: We can prove the above behavior by adding a no-args constructor with a print statement in the `Parrot` class. It will be called only once when we run our app.
 

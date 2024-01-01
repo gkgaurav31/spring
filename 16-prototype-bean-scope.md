@@ -1,6 +1,6 @@
 # PROTOTYPE BEAN SCOPE
 
-Every time you request a reference to a prototype-scoped bean, Spring creates a new object instance. For prototype beans, Spring doesn’t create and manage an object instance directly. The framework manages the object’s type and creates a new instance every time someone requests a reference to the bean.
+Every time you request a reference to a prototype-scoped bean, Spring creates a new object instance. For prototype beans, Spring doesn't create and manage an object instance directly. The framework manages the object's type and creates a new instance every time someone requests a reference to the bean.
 
 ## EXAMPLE
 
@@ -247,7 +247,7 @@ No. If we define this bean as singleton and multiple threads use it concurrently
 
 ## DOING IT THE WRONG WAY (IMPORTANT)
 
-Don’t make the mistake of injecting the `CommentProcessor` directly in the `CommentService` bean. The `CommentService` bean is a singleton, which means that Spring creates only an instance of this class. As a consequence, Spring will also inject the dependencies of this class just once when it creates the `CommentService` bean itself. In this case, you’ll end up with only an instance of the `CommentProcessor`. Each call of the `sendComment()` method will use this unique instance, so with multiple threads you’ll run into the same race condition issues as with a singleton bean.
+Don't make the mistake of injecting the `CommentProcessor` directly in the `CommentService` bean. The `CommentService` bean is a singleton, which means that Spring creates only an instance of this class. As a consequence, Spring will also inject the dependencies of this class just once when it creates the `CommentService` bean itself. In this case, you'll end up with only an instance of the `CommentProcessor`. Each call of the `sendComment()` method will use this unique instance, so with multiple threads you'll run into the same race condition issues as with a singleton bean.
 
 ```java
 package service;
@@ -450,7 +450,7 @@ The `CommentService` is still singleton. So the dependencies of it are also init
 | Singleton                                                                                           | Prototype                                                                                             |
 | --------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
 | The framework associates a name with an actual object instance.                                     | A name is associated with a type.                                                                     |
-| Every time you refer to a bean name you’ll get the same object instance.                            | Every time you refer to a bean name, you get a new instance.                                          |
+| Every time you refer to a bean name you'll get the same object instance.                            | Every time you refer to a bean name, you get a new instance.                                          |
 | You can configure Spring to create the instances when the context is loaded or when first referred. | The framework always creates the object instances for the prototype scope when you refer to the bean. |
 | Singleton is the default bean scope in Spring.                                                      | You need to explicitly mark a bean as a prototype.                                                    |
-| It’s not recommended that a singleton bean to have mutable attributes.                              | A prototype bean can have mutable attributes.                                                         |
+| It's not recommended that a singleton bean to have mutable attributes.                              | A prototype bean can have mutable attributes.                                                         |

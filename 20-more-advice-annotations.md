@@ -18,7 +18,7 @@
   INFO: publishing comment: Comment{author='Scooby', message='Scooby Doobey Doo'}
   ```
 
-- `@AfterReturning`: Calls the method defining the aspect logic after the method successfully returns, and provides the returned value as a parameter to the aspect method. The aspect method isn’t called if the intercepted method throws an exception.
+- `@AfterReturning`: Calls the method defining the aspect logic after the method successfully returns, and provides the returned value as a parameter to the aspect method. The aspect method isn't called if the intercepted method throws an exception.
 
   ```java
   @AfterReturning("execution(* services.CommentService.publishComment(..))")

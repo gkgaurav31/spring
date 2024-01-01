@@ -102,7 +102,7 @@ public String home(@RequestParam String color, Model model){
 }
 ```
 
-> If we directly access `http://localhost:8080/home` now, we will get HTTP 400 (Bad Request). A request parameter is mandatory by default. If the client doesn’t provide a value for it, the server sends back a response with the status HTTP "400 Bad Request." If you wish the value to be optional, you need to explicitly specify this on the annotation using the optional attribute: `@RequestParam(optional=true)`
+> If we directly access `http://localhost:8080/home` now, we will get HTTP 400 (Bad Request). A request parameter is mandatory by default. If the client doesn't provide a value for it, the server sends back a response with the status HTTP "400 Bad Request." If you wish the value to be optional, you need to explicitly specify this on the annotation using the optional attribute: `@RequestParam(optional=true)`
 
 ![Alt text](images/request-param-color.png)
 
@@ -124,7 +124,7 @@ Test using: `http://localhost:8080/home?name=Kevin&color=orange`
 ### USING PATH VARIABLES
 
 When the page you write depends on only one or two values that are the core of the
-end result, it’s better to write them directly in the path to make the request easier to read. The URL is also easier to find when you bookmark it in your browser and easier to index with a search engine. If there are many parameters which need to be passed, it would be better to use query parameters.
+end result, it's better to write them directly in the path to make the request easier to read. The URL is also easier to find when you bookmark it in your browser and easier to index with a search engine. If there are many parameters which need to be passed, it would be better to use query parameters.
 
 Here's an example:
 
@@ -149,11 +149,11 @@ Common HTTP methods:
 
 | HTTP Method | Description                                                              |
 | ----------- | ------------------------------------------------------------------------ |
-| GET         | The client’s request only retrieves data.                                |
-| POST        | The client’s request sends new data to be added by the server.           |
-| PUT         | The client’s request changes a data record on the server side.           |
-| PATCH       | The client’s request partially changes a data record on the server side. |
-| DELETE      | The client’s request deletes data on the server side.                    |
+| GET         | The client's request only retrieves data.                                |
+| POST        | The client's request sends new data to be added by the server.           |
+| PUT         | The client's request changes a data record on the server side.           |
+| PATCH       | The client's request partially changes a data record on the server side. |
+| DELETE      | The client's request deletes data on the server side.                    |
 
 We will create a simple web application in which clients can add and view `Product`. We will have a HTML form which can send data to be added. It will also show a list of Products currently present.
 

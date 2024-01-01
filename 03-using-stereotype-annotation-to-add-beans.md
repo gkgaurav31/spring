@@ -26,7 +26,7 @@ public class Parrot {
 }
 ```
 
-- By default, Spring doesn’t search for classes annotated with stereotype annotations, so if we just leave the code as-is, Spring won’t add a bean of type Parrot in its context. To tell Spring it needs to search for classes annotated with stereotype annotations, we use the @ComponentScan annotation over the configuration class. Also, with the @ComponentScan annotation, we tell Spring where to look for these classes.
+- By default, Spring doesn't search for classes annotated with stereotype annotations, so if we just leave the code as-is, Spring won't add a bean of type Parrot in its context. To tell Spring it needs to search for classes annotated with stereotype annotations, we use the `@ComponentScan` annotation over the configuration class. Also, with the `@ComponentScan` annotation, we tell Spring where to look for these classes.
 
 ```java
 package config;
@@ -74,8 +74,8 @@ public class App {
 | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 1. You have full control over the instance creation you add to the Spring context. It is your responsibility to create and configure the instance in the body of the method annotated with @Bean. Spring only takes that instance and adds it to the context as-is. | 1. You only have control over the instance after the framework creates it.                                                                                                                                                                          |
 | 2. You can use this method to add more instances of the same type to the Spring context.                                                                                                                                                                            | 2. This way, you can only add one instance of the class to the context.                                                                                                                                                                             |
-| 3. You can use the @Bean annotation to add to the Spring context any object instance. The class that defines the instance doesn’t need to be defined in your app. Like, we can add a String and an Integer to the Spring context.                                   | 3. You can use stereotype annotations only to create beans of the classes your application owns. For example, you cannot add a bean of type String or Integer because you don’t own these classes to change them by adding a stereotype annotation. |
-| 4. You need to write a separate method for each bean you create, which adds boilerplate code to your app. For this reason, we prefer using @Bean as a second option to stereotype annotations in our projects.                                                      | 4. Using stereotype annotations to add beans to the Spring context doesn’t add boilerplate code to your app.                                                                                                                                        |
+| 3. You can use the @Bean annotation to add to the Spring context any object instance. The class that defines the instance doesn't need to be defined in your app. Like, we can add a String and an Integer to the Spring context.                                   | 3. You can use stereotype annotations only to create beans of the classes your application owns. For example, you cannot add a bean of type String or Integer because you don't own these classes to change them by adding a stereotype annotation. |
+| 4. You need to write a separate method for each bean you create, which adds boilerplate code to your app. For this reason, we prefer using @Bean as a second option to stereotype annotations in our projects.                                                      | 4. Using stereotype annotations to add beans to the Spring context doesn't add boilerplate code to your app.                                                                                                                                        |
 
 ## @PostConstruct
 
@@ -145,4 +145,4 @@ public class App {
 ```
 
 > `PreConstruct`: Very similarly, but less encountered in real-world apps, you can use an annotation
-> named @PreDestroy. With this annotation, you define a method that Spring calls immediately before closing and clearing the context.
+> named `@PreDestroy`. With this annotation, you define a method that Spring calls immediately before closing and clearing the context.

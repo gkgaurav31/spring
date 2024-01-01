@@ -140,5 +140,5 @@ Unsatisfied dependency expressed through constructor parameter 0: Error creating
     ... 28 more
 ```
 
-Whenever you find such an exception, you need to go to the
+Whenever we find such an exception, we need to go to the
 classes specified by the exception and eliminate the circular dependency.

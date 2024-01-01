@@ -1,6 +1,6 @@
 # ADD BEANS TO SPRING CONTEXT PROGRAMATICALLY
 
-This is available in Spring 5 and later. Using the registerBean() method enables you to implement custom logic for adding beans to the Spring context.
+This is available in Spring 5 and later. Using the `registerBean()` method enables you to implement custom logic for adding beans to the Spring context.
 
 ```java
 if (condition) {
@@ -81,13 +81,16 @@ public class App {
 
         Supplier<Parrot> supplier = () -> x;
 
-        //alternative:
-        /*Supplier<Parrot> supplier = new Supplier<Parrot>() {
+        /*
+        alternative way:
+
+        Supplier<Parrot> supplier = new Supplier<Parrot>() {
             @Override
             public Parrot get() {
                 return x;
             }
-        };*/
+        };
+        */
 
         context.registerBean("myparrot", Parrot.class, supplier);
 

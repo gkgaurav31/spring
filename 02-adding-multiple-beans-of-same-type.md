@@ -148,7 +148,7 @@ public class Main {
         var context = new AnnotationConfigApplicationContext(ProjectConfig.class);
 
         Parrot p = context.getBean(Parrot.class);
-        System.out.println(p.getName()); //this will choose "myparrot" bean since its primary
+        System.out.println(p.getName()); //this will choose "myparrot" bean since it's primary
 
     }
 

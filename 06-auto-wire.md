@@ -1,6 +1,6 @@
 # AUTO-WIRE
 
-Using the `@Autowired` annotation, we mark an object’s property where we want Spring to inject a value from the context, and we mark this intention directly in the class that defines the object that needs the dependency.
+Using the `@Autowired` annotation, we mark an object's property where we want Spring to inject a value from the context, and we mark this intention directly in the class that defines the object that needs the dependency.
 
 There are mainly three ways how we can use `@Autowired` annotation:
 
@@ -157,7 +157,7 @@ public class AppConfig {
 
 - Recommended approach mostly
 - It enables you to define the fields as final, ensuring no one can change their value after Spring initializes them.
-- The possibility to set the values when calling the constructor also helps you when writing specific unit tests where you don’t want to rely on Spring making the field injection for you. (We will see this later)
+- The possibility to set the values when calling the constructor also helps you when writing specific unit tests where you don't want to rely on Spring making the field injection for you. (We will see this later)
 
 The only change needed will be in `Person` class. Instead of using `@Autowire` for the parrot field, we will use constructor to inject the dependency for us.
 

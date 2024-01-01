@@ -5,7 +5,7 @@ We will start by creating a simple app which does not use Spring. Then, use what
 ## USE-CASE
 
 Say you are implementing an app a team uses to manage their tasks. One of the
-app’s features is allowing the users to leave comments for the tasks.
+app's features is allowing the users to leave comments for the tasks.
 
 When a user publishes a comment, it is stored somewhere (e.g., in a database), and the app sends an email to a specific address configured in the app.
 

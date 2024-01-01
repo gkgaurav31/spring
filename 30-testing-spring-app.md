@@ -81,7 +81,7 @@ public class TransferServiceUnitTests {
 ```
 
 Now we can "control" this mock object using `given()` method. In our case, we
-want the AccountRepository’s `findById()` method to return a specific `Account`
+want the AccountRepository's `findById()` method to return a specific `Account`
 instance for a given parameter value. We will also add `@DisplayName` annotation to describe the method.
 
 ```java
@@ -245,7 +245,7 @@ public class TransferServiceUnitTests {
     @Mock
     private AccountRepository accountRepository;
 
-    //Use the @InjectMocks to create the tested object and inject it into the class’s annotated field.
+    //Use the @InjectMocks to create the tested object and inject it into the class's annotated field.
     @InjectMocks
     private TransferService transferService;
 

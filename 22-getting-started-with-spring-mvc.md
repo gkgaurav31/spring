@@ -7,7 +7,7 @@
 - The client sends an HTTP request to the web server.
 - The dispatcher servlet uses the handler mapping to find out what controller
   action to call.
-- The dispatcher servlet calls the controller’s action.
+- The dispatcher servlet calls the controller's action.
 - After executing the action associated with the HTTP request, the controller
   returns the view name the dispatcher servlet needs to render into the HTTP
   response.

@@ -180,7 +180,7 @@ Date: Sun, 24 Dec 2023 17:42:46 GMT
 
 ### MANAGING EXCEPTIONS AT THE ENDPOINT LEVEL
 
-It's essential to consider what happens if the controller’s action throws an exception. One way to handle is to return a different `ResponseEntity` when that exception happens. Another way which we will look at is by using REST controller advice class - an aspect that intercepts an endpoint call when it throws an exception, and you can specify a custom logic to be executed for that specific exception.
+It's essential to consider what happens if the controller's action throws an exception. One way to handle is to return a different `ResponseEntity` when that exception happens. Another way which we will look at is by using REST controller advice class - an aspect that intercepts an endpoint call when it throws an exception, and you can specify a custom logic to be executed for that specific exception.
 
 #### USING CUSTOM EXCEPTION
 

@@ -2,7 +2,7 @@
 
 ## Scenario
 
-Implement an object that needs to print packages’ details to be delivered for a shipping app. The printed details must be sorted by their destination address.
+Implement an object that needs to print packages' details to be delivered for a shipping app. The printed details must be sorted by their destination address.
 
 ### THOUGHT PROCESS
 
@@ -11,19 +11,17 @@ The most straight forward way to implement is by having two classes:
 - `DeliveryDetailsPrinter` class whose main responsibility is to `printDetails()`.
 - `DeliveryDetailsPrinter` delegates the sorting task to another class `SorterByAddress` which can have a method `sortDetails()` to sort by address.
 
-The main challenge we can easily see is:
-
 ### UNDERSTANDING THE PROBLEM
 
-> What happens if later we need to sort by sendder's name instead of destination address?
+What happens if later we need to sort by sendder's name instead of destination address?
 
 You will need to change the code in `DeliveryDetailsPrinter` as well, which is not ideal.
 
 ### CODE TO INTERFACE
 
-Instead of saying "Give me this" (concrete implementation) and rather say "I want to do this" (interface) it would allow us to change the implementation of how the main task is done later. The idea is not to rely directly on a concrete implementation as it can change later.
+Instead of saying "_Give me this_" (concrete implementation) and rather say "_I want to do this_" (interface) it would allow us to change the implementation of how the main task is done later. The idea is not to rely directly on a concrete implementation as it can change later.
 
-The classes would then look something like this:
+The classes would look something like this:
 
 - `Sorter` interface
 
