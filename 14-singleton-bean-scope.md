@@ -26,7 +26,7 @@ Singleton bean scope means that there will be a single bean for a specific uniqu
         +-----------------------------+
 ```
 
-Let's say, there are two services `@CommentService` and `@UserService` which depend on a repository `@CommentRepository`. The classes would look like this:
+Let's say, there are two services `CommentService` and `UserService` which depend on a repository `CommentRepository`. The classes would look like this:
 
 - First we create the `@Repository` dependency
 
@@ -48,6 +48,8 @@ public class CommentRepository {
 (We are not using interfaces here since this example is just to prove singleton nature of the beans)
 
 - Next we define the `@Service` classes: `CommentService` and `UserService` which has a dependency on `CommentRepository`. We will use `@Autowired` to inject the dependency.
+
+`CommentService` class:
 
 ```java
 package service;

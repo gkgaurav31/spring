@@ -121,7 +121,7 @@ INFO: publishing comment: Scooby Dooby Doo! by Scooby
 
 ## ADDING ASPECT TO OUR APP
 
-- Enable the aspect mechanism in your Spring app by annotating the configuration class with the `@EnableAspectJAutoProxy` annotation.
+- Enable the aspect mechanism in the Spring app by annotating the configuration class with the `@EnableAspectJAutoProxy` annotation.
 
   ```java
   package config;

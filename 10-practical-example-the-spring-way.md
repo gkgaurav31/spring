@@ -183,7 +183,7 @@ public class AppConfig {
 }
 ```
 
-- And that's majorly it. Obviously, we would change the way we run our main App now. Instead of creating the object for CommentService, we can get it from spring context!
+- And that's majorly it. Obviously, we would change the way we run our main App now. Instead of creating the object for `CommentService`, we can get it from spring context!
 
 ```java
 package main;
