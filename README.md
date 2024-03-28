@@ -31,7 +31,7 @@
 - [📚 Data Persistence with Spring](29-data-persistence-with-spring.md) - Persist data with Spring.
 - [🧪 Testing Spring App](30-testing-spring-app.md) - Test your Spring application.
 
-📖 Reference Book: [Spring Start Here by Laurentiu Spilca]([https://www.amazon.com/Spring-Start-Here-Laurentiu-Spilca/dp/1484261309](https://www.manning.com/books/spring-start-here))
+📖 Reference Book: [Spring Start Here by Laurentiu Spilca](https://www.manning.com/books/spring-start-here)
 
 👨‍💻 My Code Blog: [Gaurav's GitHub Page](https://gkgaurav31.github.io/)
 
